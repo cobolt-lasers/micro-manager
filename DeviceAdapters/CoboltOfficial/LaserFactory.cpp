@@ -40,8 +40,8 @@
 
 #include "LaserDriver.h"
 
-#include "Dpl06Laser.h"
-#include "Mld06Laser.h"
+#include "OldDpl06Laser.h"
+#include "OldMld06Laser.h"
 #include "SkyraLaser.h"
 
 //#include "StaticStringProperty.h"
@@ -63,11 +63,13 @@ Laser* LaserFactory::Create( LaserDriver* driver )
     
     std::string firmwareVersion;
     if ( driver->SendCommand( "gfv?", &firmwareVersion ) != return_code::ok ) {
+        Logger::Instance()->LogMessage( "Failed to retrieve firmware number (gfv?).", true );
         return NULL;
     }
 
     std::string modelString;
     if ( driver->SendCommand( "glm?", &modelString ) != return_code::ok ) {
+        Logger::Instance()->LogMessage("Failed to retrieve model number (glm?).", true);
         return NULL;
     }
     
@@ -88,12 +90,12 @@ Laser* LaserFactory::Create( LaserDriver* driver )
         modelString.find("-06-93-") != std::string::npos ||
         modelString.find("-06-97-") != std::string::npos) {
 
-        laser = new Dpl06Laser( wavelength, driver );
+        laser = new OldDpl06Laser( wavelength, driver );
 
     } else if ( modelString.find( "-06-01-" ) != std::string::npos ||
                 modelString.find( "-06-03-" ) != std::string::npos ) {
 
-        laser = new Mld06Laser( "06-MLD", driver );
+        laser = new OldMld06Laser( "06-MLD", driver );
 
     } /*else if ( modelString.find( "-05-01-" ) ) { // TODO: uncomment once we add support for gen5b
 

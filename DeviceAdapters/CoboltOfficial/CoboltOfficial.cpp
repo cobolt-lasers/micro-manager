@@ -145,7 +145,7 @@ int CoboltOfficial::Initialize()
     }
 
     // Make sure 'device mode' is selected:
-    //SendCommand( "1" );
+    SendCommand( "1" );
 
     laser_ = LaserFactory::Create( this );
 

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// FILE:       Mld06Laser.cpp
+// FILE:       OldMld06Laser.cpp
 // PROJECT:    MicroManager
 // SUBSYSTEM:  DeviceAdapters
 //-----------------------------------------------------------------------------
@@ -34,7 +34,7 @@
 // AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2020)
 //
 
-#include "Mld06Laser.h"
+#include "OldMld06Laser.h"
 
 #include "LaserDriver.h"
 #include "LaserStateProperty.h"
@@ -44,7 +44,7 @@
 using namespace std;
 using namespace cobolt;
 
-Mld06Laser::Mld06Laser( const std::string& wavelength, LaserDriver* driver ) :
+OldMld06Laser::OldMld06Laser( const std::string& wavelength, LaserDriver* driver ) :
     Laser( "06-MLD", driver )
 {
     currentUnit_ = Milliamperes;
@@ -73,11 +73,11 @@ Mld06Laser::Mld06Laser( const std::string& wavelength, LaserDriver* driver ) :
     CreateModulationPowerSetpointProperty();
 }
 
-void Mld06Laser::CreateLaserStateProperty()
+void OldMld06Laser::CreateLaserStateProperty()
 {
     if ( IsInCdrhMode() ) {
 
-        laserStateProperty_ = new LaserStateProperty( Property::String, "Mld06Laser State", laserDriver_, "gom?" );
+        laserStateProperty_ = new LaserStateProperty( Property::String, "OldMld06Laser State", laserDriver_, "gom?" );
     
         laserStateProperty_->RegisterState( "0", "Off", false );
         laserStateProperty_->RegisterState( "1", "Waiting for Key", false );
@@ -89,7 +89,7 @@ void Mld06Laser::CreateLaserStateProperty()
 
     } else {
 
-        laserStateProperty_ = new LaserStateProperty( Property::String, "Mld06Laser State", laserDriver_, "l?" );
+        laserStateProperty_ = new LaserStateProperty( Property::String, "OldMld06Laser State", laserDriver_, "l?" );
 
         laserStateProperty_->RegisterState( "0", "Off", true );
         laserStateProperty_->RegisterState( "1", "On", true );
@@ -98,7 +98,7 @@ void Mld06Laser::CreateLaserStateProperty()
     RegisterPublicProperty( laserStateProperty_ );
 }
 
-void Mld06Laser::CreateRunModeProperty()
+void OldMld06Laser::CreateRunModeProperty()
 {
     EnumerationProperty* property;
 

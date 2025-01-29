@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// FILE:       Dpl06Laser.cpp
+// FILE:       OldDpl06Laser.cpp
 // PROJECT:    MicroManager
 // SUBSYSTEM:  DeviceAdapters
 //-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@
 //
 
 #include <assert.h>
-#include "Dpl06Laser.h"
+#include "OldDpl06Laser.h"
 #include "Logger.h"
 
 #include "LaserDriver.h"
@@ -46,7 +46,7 @@
 using namespace std;
 using namespace cobolt;
 
-Dpl06Laser::Dpl06Laser( const std::string& wavelength, LaserDriver* driver ) :
+OldDpl06Laser::OldDpl06Laser( const std::string& wavelength, LaserDriver* driver ) :
     Laser( "06-DPL", driver )
 {
     currentUnit_ = Milliamperes;
@@ -76,11 +76,11 @@ Dpl06Laser::Dpl06Laser( const std::string& wavelength, LaserDriver* driver ) :
     CreateModulationCurrentLowSetpointProperty();
 }
 
-void Dpl06Laser::CreateLaserStateProperty()
+void OldDpl06Laser::CreateLaserStateProperty()
 {
     if ( IsInCdrhMode() ) {
 
-        laserStateProperty_ = new LaserStateProperty( Property::String, "Dpl06Laser State", laserDriver_, "gom?" );
+        laserStateProperty_ = new LaserStateProperty( Property::String, "OldDpl06Laser State", laserDriver_, "gom?" );
 
         laserStateProperty_->RegisterState( "0", "Off", false );
         laserStateProperty_->RegisterState( "1", "Waiting for TEC", false );
@@ -91,9 +91,8 @@ void Dpl06Laser::CreateLaserStateProperty()
         laserStateProperty_->RegisterState( "6", "Aborted", false );
         laserStateProperty_->RegisterState( "7", "Modulation", false );
 
-    } else {
 
-        laserStateProperty_ = new LaserStateProperty( Property::String, "Dpl06Laser State", laserDriver_, "l?" );
+        laserStateProperty_ = new LaserStateProperty( Property::String, "OldDpl06Laser State", laserDriver_, "l?" );
 
         laserStateProperty_->RegisterState( "0", "Off", true );
         laserStateProperty_->RegisterState( "1", "On", true );
@@ -102,7 +101,7 @@ void Dpl06Laser::CreateLaserStateProperty()
     RegisterPublicProperty( laserStateProperty_ );
 }
 
-void Dpl06Laser::CreateRunModeProperty()
+void OldDpl06Laser::CreateRunModeProperty()
 {
     EnumerationProperty* property;
     

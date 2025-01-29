@@ -46,6 +46,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\..\Program Files\Micro-Manager-2.0</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -78,17 +79,17 @@
   <ItemGroup>
     <ClCompile Include="CoboltOfficial.cpp" />
     <ClCompile Include="DeviceProperty.cpp" />
-    <ClCompile Include="Dpl06Laser.cpp" />
     <ClCompile Include="EnumerationProperty.cpp" />
     <ClCompile Include="ImmutableEnumerationProperty.cpp" />
     <ClCompile Include="Laser.cpp" />
     <ClCompile Include="LaserFactory.cpp" />
     <ClCompile Include="LaserShutterProperty.cpp" />
     <ClCompile Include="LaserStateProperty.cpp" />
-    <ClCompile Include="Mld06Laser.cpp" />
     <ClCompile Include="MutableDeviceProperty.cpp" />
     <ClCompile Include="NoShutterCommandLegacyFix.cpp" />
     <ClCompile Include="NumericProperty.cpp" />
+    <ClCompile Include="OldDpl06Laser.cpp" />
+    <ClCompile Include="OldMld06Laser.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="SkyraLaser.cpp" />
     <ClCompile Include="StaticStringProperty.cpp" />
@@ -97,7 +98,6 @@
     <ClInclude Include="base.h" />
     <ClInclude Include="CoboltOfficial.h" />
     <ClInclude Include="DeviceProperty.h" />
-    <ClInclude Include="Dpl06Laser.h" />
     <ClInclude Include="EnumerationProperty.h" />
     <ClInclude Include="ImmutableEnumerationProperty.h" />
     <ClInclude Include="Laser.h" />
@@ -106,10 +106,11 @@
     <ClInclude Include="LaserShutterProperty.h" />
     <ClInclude Include="LaserStateProperty.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="Mld06Laser.h" />
     <ClInclude Include="MutableDeviceProperty.h" />
     <ClInclude Include="NoShutterCommandLegacyFix.h" />
     <ClInclude Include="NumericProperty.h" />
+    <ClInclude Include="OldDpl06Laser.h" />
+    <ClInclude Include="OldMld06Laser.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="SkyraLaser.h" />
     <ClInclude Include="StaticStringProperty.h" />
