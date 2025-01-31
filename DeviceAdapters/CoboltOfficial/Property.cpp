@@ -45,7 +45,7 @@ Property::Property( const Stereotype stereotype, const std::string& name ) :
     stereotype_( stereotype ),
     name_( name )
 {
-    const std::string propertyIdStr = std::to_string( (long double) NextPropertyId_++ );
+    const std::string propertyIdStr = std::to_string( NextPropertyId_++ );
     name_ = ( std::string( 2 - propertyIdStr.length(), '0' ) + propertyIdStr ) + "-" + name;
 }
 
