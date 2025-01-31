@@ -34,8 +34,8 @@
 // AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2020)
 //
 
-#ifndef __COBOLT__DPL06_LASER_H
-#define __COBOLT__DPL06_LASER_H
+#ifndef __COBOLT__OLD_DPL06_LASER_H
+#define __COBOLT__OLD_DPL06_LASER_H
 
 #include "Laser.h"
 
@@ -59,4 +59,4 @@ protected:
 
 NAMESPACE_COBOLT_END
 
-#endif // #ifndef __COBOLT__DPL06_LASER_H
+#endif // #ifndef __COBOLT__OLD_DPL06_LASER_H

@@ -40,6 +40,8 @@
 
 #include "LaserDriver.h"
 
+#include "Dpl06Laser.h"
+#include "Mld06Laser.h"
 #include "OldDpl06Laser.h"
 #include "OldMld06Laser.h"
 #include "SkyraLaser.h"
@@ -63,16 +65,18 @@ Laser* LaserFactory::Create( LaserDriver* driver )
     
     std::string firmwareVersion;
     if ( driver->SendCommand( "gfv?", &firmwareVersion ) != return_code::ok ) {
-        Logger::Instance()->LogMessage( "Failed to retrieve firmware number (gfv?).", true );
+        Logger::Instance()->LogMessage( "Failed to retrieve firmware number (gfv?).", false );
         return NULL;
     }
 
     std::string modelString;
     if ( driver->SendCommand( "glm?", &modelString ) != return_code::ok ) {
-        Logger::Instance()->LogMessage("Failed to retrieve model number (glm?).", true);
+        Logger::Instance()->LogMessage("Failed to retrieve model number (glm?).", false );
         return NULL;
     }
     
+    Logger::Instance()->LogMessage( "Detected laser with firmware version '" + firmwareVersion + "' and model number '" + modelString + "'.", false );
+
     std::vector<std::string> modelTokens;
     DecomposeModelString( modelString, modelTokens );
     std::string wavelength = "Unknown";
@@ -90,14 +94,26 @@ Laser* LaserFactory::Create( LaserDriver* driver )
         modelString.find("-06-93-") != std::string::npos ||
         modelString.find("-06-97-") != std::string::npos) {
 
+        Logger::Instance()->LogMessage( "Instantiating the 5V 06-DPL driver...", false );
         laser = new OldDpl06Laser( wavelength, driver );
+
+    } else if ( firmwareVersion.find( "/1005." ) != std::string::npos ) {
+
+        Logger::Instance()->LogMessage( "Instantiating the 12V 06-DPL driver...", false );
+        laser = new Dpl06Laser( wavelength, driver );
 
     } else if ( modelString.find( "-06-01-" ) != std::string::npos ||
                 modelString.find( "-06-03-" ) != std::string::npos ) {
-
+        
+        Logger::Instance()->LogMessage( "Instantiating the 5V 06-MLD driver...", false );
         laser = new OldMld06Laser( "06-MLD", driver );
 
-    } /*else if ( modelString.find( "-05-01-" ) ) { // TODO: uncomment once we add support for gen5b
+    } else if ( firmwareVersion.find( "/1004." ) != std::string::npos ) {
+
+        Logger::Instance()->LogMessage( "Instantiating the 12V 06-MLD driver...", false );
+        laser = new Mld06Laser( wavelength, driver );
+
+    }  /*else if ( modelString.find( "-05-01-" ) ) { // TODO: uncomment once we add support for gen5b
 
         //laser = new Gen5bLaser( "05", driver );
 
@@ -118,7 +134,9 @@ Laser* LaserFactory::Create( LaserDriver* driver )
             enabledLines[ i ] = ( submodelString.find( "MLD" ) != std::string::npos ||
                 submodelString.find( "DPL" ) != std::string::npos );
         }
-        
+
+        Logger::Instance()->LogMessage( "Instantiating the Skyra driver...", false );
+
         laser = new SkyraLaser(
             driver,
             enabledLines[ 0 ],
@@ -131,12 +149,14 @@ Laser* LaserFactory::Create( LaserDriver* driver )
         laser = new Laser( "Unknown", driver );
     }
     
-    Logger::Instance()->LogMessage( "Created laser '" + laser->GetName() + "'", true );
-
-    laser->SetShutterOpen( false );
-
+    Logger::Instance()->LogMessage( "Instantiated driver for laser '" + laser->GetName() + "'.", true );
+    
+    if ( laser->IsShutterEnabled() ) {
+        laser->SetShutterOpen( false );
+    }
+    
     Property::ResetIdGenerator();
-
+    
     return laser;
 }
 
