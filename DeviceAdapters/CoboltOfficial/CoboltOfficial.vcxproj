@@ -81,6 +81,7 @@
     <ClCompile Include="DeviceProperty.cpp" />
     <ClCompile Include="Dpl06Laser.cpp" />
     <ClCompile Include="EnumerationProperty.cpp" />
+    <ClCompile Include="Gen5Laser.cpp" />
     <ClCompile Include="ImmutableEnumerationProperty.cpp" />
     <ClCompile Include="Laser.cpp" />
     <ClCompile Include="LaserFactory.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="DeviceProperty.h" />
     <ClInclude Include="Dpl06Laser.h" />
     <ClInclude Include="EnumerationProperty.h" />
+    <ClInclude Include="Gen5Laser.h" />
     <ClInclude Include="ImmutableEnumerationProperty.h" />
     <ClInclude Include="Laser.h" />
     <ClInclude Include="LaserDriver.h" />

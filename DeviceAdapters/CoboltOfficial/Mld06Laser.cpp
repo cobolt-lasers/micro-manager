@@ -31,7 +31,7 @@
 //                specified in owner's manual may result in exposure to hazardous radiation and
 //                violation of the CE / CDRH laser safety compliance.
 //
-// AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2020)
+// AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2025)
 //
 
 #include "Mld06Laser.h"
@@ -102,11 +102,7 @@ void Mld06Laser::CreateRunModeProperty()
 {
     EnumerationProperty* property;
 
-    if ( IsShutterCommandSupported() || !IsInCdrhMode() ) {
-        property = new EnumerationProperty( "Run Mode", laserDriver_, "gam?" );
-    } else {
-        property = new legacy::no_shutter_command::LaserRunModeProperty( "Run Mode", laserDriver_, "gam?", this );
-    }
+    property = new EnumerationProperty( "Run Mode", laserDriver_, "gam?" );
     
     property->SetCaching( false );
 

@@ -97,6 +97,7 @@ protected:
 
     void CreateOperatingHoursProperty();
     void CreateCurrentSetpointProperty();
+    void CreateCurrentSetpointProperty( const std::string& getPersistedDataCommand, const std::string& setPersistedDataCommand );
     void CreateCurrentReadingProperty();
     void CreatePowerSetpointProperty();
     void CreatePowerReadingProperty();

@@ -105,7 +105,7 @@ void OldMld06Laser::CreateRunModeProperty()
     if ( IsShutterCommandSupported() || !IsInCdrhMode() ) {
         property = new EnumerationProperty( "Run Mode", laserDriver_, "gam?" );
     } else {
-        property = new legacy::no_shutter_command::LaserRunModeProperty( "Run Mode", laserDriver_, "gam?", this );
+        property = new legacy::no_shutter_command::LaserRunModeProperty( "Run Mode", laserDriver_, "gam?", this, "gdsn?", "sdsn" );
     }
     
     property->SetCaching( false );

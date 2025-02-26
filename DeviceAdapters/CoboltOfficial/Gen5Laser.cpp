@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// FILE:       OldDpl06Laser.cpp
+// FILE:       Gen5Laser.cpp
 // PROJECT:    MicroManager
 // SUBSYSTEM:  DeviceAdapters
 //-----------------------------------------------------------------------------
@@ -31,12 +31,10 @@
 //                specified in owner's manual may result in exposure to hazardous radiation and
 //                violation of the CE / CDRH laser safety compliance.
 //
-// AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2020)
+// AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2025)
 //
 
-#include <assert.h>
-#include "OldDpl06Laser.h"
-#include "Logger.h"
+#include "Gen5Laser.h"
 
 #include "LaserDriver.h"
 #include "LaserStateProperty.h"
@@ -46,11 +44,11 @@
 using namespace std;
 using namespace cobolt;
 
-OldDpl06Laser::OldDpl06Laser( const std::string& wavelength, LaserDriver* driver ) :
-    Laser( "06-DPL", driver )
+Gen5Laser::Gen5Laser( const std::string& wavelength, LaserDriver* driver ) :
+    Laser( "05-01 Laser", driver )
 {
-    currentUnit_ = Milliamperes;
-    powerUnit_ = Milliwatts;
+    currentUnit_ = Amperes;
+    powerUnit_ = Watts;
 
     CreateNameProperty();
     CreateModelProperty();
@@ -67,33 +65,29 @@ OldDpl06Laser::OldDpl06Laser( const std::string& wavelength, LaserDriver* driver
     CreateRunModeProperty();
     CreatePowerSetpointProperty();
     CreatePowerReadingProperty();
-    CreateCurrentSetpointProperty();
+    CreateCurrentSetpointProperty( "gartn?", "sartn" );
     CreateCurrentReadingProperty();
-    CreateDigitalModulationProperty();
-    CreateAnalogModulationFlagProperty();
-
-    CreateModulationCurrentHighSetpointProperty();
-    CreateModulationCurrentLowSetpointProperty();
 }
 
-void OldDpl06Laser::CreateLaserStateProperty()
+void Gen5Laser::CreateLaserStateProperty()
 {
-    if (IsInCdrhMode()) {
+    if ( IsInCdrhMode() ) {
 
-        laserStateProperty_ = new LaserStateProperty(Property::String, "OldDpl06Laser State", laserDriver_, "gom?");
+        laserStateProperty_ = new LaserStateProperty( Property::String, "Gen5Laser State", laserDriver_, "gom?" );
+    
+        laserStateProperty_->RegisterState( "0", "Off", false );
+        laserStateProperty_->RegisterState( "1", "Waiting for Temperatures", false );
+        laserStateProperty_->RegisterState( "2", "Waiting for Key", false );
+        laserStateProperty_->RegisterState( "3", "Warming Up", false );
+        laserStateProperty_->RegisterState( "4", "Completed", true );
+        laserStateProperty_->RegisterState( "5", "Fault", false );
+        laserStateProperty_->RegisterState( "6", "Aborted", false );
+        laserStateProperty_->RegisterState( "7", "Waiting for Remote", false );
+        laserStateProperty_->RegisterState( "8", "Standby", false );
 
-        laserStateProperty_->RegisterState("0", "Off", false);
-        laserStateProperty_->RegisterState("1", "Waiting for TEC", false);
-        laserStateProperty_->RegisterState("2", "Waiting for Key", false);
-        laserStateProperty_->RegisterState("3", "Warming Up", false);
-        laserStateProperty_->RegisterState("4", "Completed", true);
-        laserStateProperty_->RegisterState("5", "Fault", false);
-        laserStateProperty_->RegisterState("6", "Aborted", false);
-        laserStateProperty_->RegisterState("7", "Modulation", false);
-    
-    } else { 
-    
-        laserStateProperty_ = new LaserStateProperty( Property::String, "OldDpl06Laser State", laserDriver_, "l?" );
+    } else {
+
+        laserStateProperty_ = new LaserStateProperty( Property::String, "Gen5Laser State", laserDriver_, "l?" );
 
         laserStateProperty_->RegisterState( "0", "Off", true );
         laserStateProperty_->RegisterState( "1", "On", true );
@@ -102,21 +96,20 @@ void OldDpl06Laser::CreateLaserStateProperty()
     RegisterPublicProperty( laserStateProperty_ );
 }
 
-void OldDpl06Laser::CreateRunModeProperty()
+void Gen5Laser::CreateRunModeProperty()
 {
     EnumerationProperty* property;
-    
+
     if ( IsShutterCommandSupported() || !IsInCdrhMode() ) {
         property = new EnumerationProperty( "Run Mode", laserDriver_, "gam?" );
     } else {
-        property = new legacy::no_shutter_command::LaserRunModeProperty( "Run Mode", laserDriver_, "gam?", this, "gdsn?", "sdsn" );
+        property = new legacy::no_shutter_command::LaserRunModeProperty( "Run Mode", laserDriver_, "gam?", this, "gartn?", "sartn" );
     }
     
     property->SetCaching( false );
 
     property->RegisterEnumerationItem( "0", "ecc", EnumerationItem_RunMode_ConstantCurrent );
     property->RegisterEnumerationItem( "1", "ecp", EnumerationItem_RunMode_ConstantPower );
-    property->RegisterEnumerationItem( "2", "em", EnumerationItem_RunMode_Modulation );
-    
+
     RegisterPublicProperty( property );
 }

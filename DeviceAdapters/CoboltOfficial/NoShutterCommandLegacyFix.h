@@ -52,14 +52,16 @@ namespace legacy
         { 
         public:
 
-            PersistedLaserState( LaserDriver* laserDriver ) :
-                laserDriver_( laserDriver )
+            PersistedLaserState( LaserDriver* laserDriver, const std::string& getPersistedDataCommand, const std::string& setPersistedDataCommand ) :
+                laserDriver_( laserDriver ),
+                _getPersistedDataCommand( getPersistedDataCommand ),
+                _setPersistedDataCommand( setPersistedDataCommand )
             {}
 
             bool PersistedStateExists() const
             {
                 std::string persistedValue;
-                laserDriver_->SendCommand( "gdsn?", &persistedValue );
+                laserDriver_->SendCommand( _getPersistedDataCommand, &persistedValue );
                 return IsValidPersistedState( persistedValue );
             }
             
@@ -70,7 +72,7 @@ namespace legacy
 
                 char valueToSave[ 32 ];
                 sprintf( valueToSave, "MM[%s;%s;%s]", isShutterOpenStr.c_str(), runmode.c_str(), currentSetpoint.c_str() );
-                const std::string saveCommand = "sdsn " + std::string( valueToSave );
+                const std::string saveCommand = _setPersistedDataCommand + " " + std::string( valueToSave );
 
                 return laserDriver_->SendCommand( saveCommand );
             }
@@ -82,7 +84,7 @@ namespace legacy
 
                 char valueToSave[ 32 ];
                 sprintf( valueToSave, "MM[%s;%s;%s]", isShutterOpenStr.c_str(), runmode.c_str(), currentSetpoint.c_str() );
-                const std::string saveCommand = "sdsn " + std::string( valueToSave );
+                const std::string saveCommand = _setPersistedDataCommand + " " + std::string( valueToSave );
 
                 return laserDriver_->SendCommand( saveCommand );
             }
@@ -91,7 +93,7 @@ namespace legacy
             {
                 char valueToSave[ 32 ];
                 sprintf( valueToSave, "MM[%s;%s;%s]", ( isShutterOpen ? "1" : "0" ), runmode.c_str(), currentSetpoint.c_str() );
-                const std::string saveCommand = "sdsn " + std::string( valueToSave );
+                const std::string saveCommand = _setPersistedDataCommand + " " + std::string( valueToSave );
 
                 return laserDriver_->SendCommand( saveCommand );
             }
@@ -125,7 +127,7 @@ namespace legacy
             int Fetch( std::string* isShutterOpen, std::string* runmode, std::string* currentSetpoint ) const
             {
                 std::string persistedValue;
-                laserDriver_->SendCommand( "gdsn?", &persistedValue );
+                laserDriver_->SendCommand( _getPersistedDataCommand, &persistedValue );
 
                 if ( !IsValidPersistedState( persistedValue ) ) {
                     return return_code::error;
@@ -150,7 +152,7 @@ namespace legacy
                         case 2: if ( currentSetpoint != NULL )  { currentSetpoint->append( 1, persistedValue[ i ] ); }  break; 
                     }
                 }
-
+                
                 if ( isShutterOpen != NULL && *isShutterOpen == "" )     { return return_code::error; }
                 if ( runmode != NULL && *runmode == "" )                 { return return_code::error; }
                 if ( currentSetpoint != NULL && *currentSetpoint == "" ) { return return_code::error; }
@@ -164,6 +166,9 @@ namespace legacy
             }
 
             LaserDriver* laserDriver_;
+
+            const std::string _getPersistedDataCommand;
+            const std::string _setPersistedDataCommand;
         };
 
         class LaserCurrentProperty : public NumericProperty<double>
@@ -172,11 +177,20 @@ namespace legacy
 
         public:
 
-            LaserCurrentProperty( const std::string& name, LaserDriver* laserDriver, const std::string& getCommand,
-                const std::string& setCommandBase, const double min, const double max, Laser* laser ) :
+            LaserCurrentProperty(
+                const std::string& name,
+                LaserDriver* laserDriver,
+                const std::string& getCommand,
+                const std::string& setCommandBase,
+                const double min,
+                const double max,
+                Laser* laser,
+                const std::string& getPersistedDataCommand,
+                const std::string& setPersistedDataCommand
+            ) :
                 NumericProperty<double>( name, laserDriver, getCommand, setCommandBase, min, max ),
                 laser_( laser ),
-                laserStatePersistence_( laserDriver )
+                laserStatePersistence_( laserDriver, getPersistedDataCommand, setPersistedDataCommand )
             {}
 
             virtual bool IsCacheEnabled() const
@@ -225,10 +239,17 @@ namespace legacy
 
         public:
             
-            LaserRunModeProperty( const std::string& name, LaserDriver* laserDriver, const std::string& getCommand, Laser* laser ) :
+            LaserRunModeProperty(
+                const std::string& name,
+                LaserDriver* laserDriver,
+                const std::string& getCommand,
+                Laser* laser,
+                const std::string& getPersistedDataCommand,
+                const std::string& setPersistedDataCommand
+            ) :
                 EnumerationProperty( name, laserDriver, getCommand ),
                 laser_( laser ),
-                laserStatePersistence_( laserDriver )
+                laserStatePersistence_( laserDriver, getPersistedDataCommand, setPersistedDataCommand )
             {
                 // We don't want caching as the value retrieval is more complex here:
                 SetCaching( false );
@@ -289,7 +310,12 @@ namespace legacy
         {
         public:
 
-            LaserShutterPropertyCdrh( const std::string& name, LaserDriver* laserDriver, Laser* laser );
+            LaserShutterPropertyCdrh(
+                const std::string& name,
+                LaserDriver* laserDriver,
+                Laser* laser,
+                const std::string& getPersistedDataCommand,
+                const std::string& setPersistedDataCommand );
             
             virtual int IntroduceToGuiEnvironment( GuiEnvironment* environment );
 

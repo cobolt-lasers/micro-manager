@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// FILE:       Mld06Laser.h
+// FILE:       Gen5Laser.h
 // PROJECT:    MicroManager
 // SUBSYSTEM:  DeviceAdapters
 //-----------------------------------------------------------------------------
@@ -34,8 +34,8 @@
 // AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2025)
 //
 
-#ifndef __COBOLT__MLD06_LASER_H
-#define __COBOLT__MLD06_LASER_H
+#ifndef __COBOLT__GEN5_LASER_H
+#define __COBOLT__GEN5_LASER_H
 
 #include "Laser.h"
 
@@ -43,11 +43,11 @@ NAMESPACE_COBOLT_BEGIN
 
 class LaserDriver;
 
-class Mld06Laser : public Laser
+class Gen5Laser : public Laser
 {
 public:
 
-    Mld06Laser( const std::string& wavelength, LaserDriver* device );
+    Gen5Laser( const std::string& wavelength, LaserDriver* device );
 
 protected:
 
@@ -57,4 +57,4 @@ protected:
 
 NAMESPACE_COBOLT_END
 
-#endif // #ifndef __COBOLT__MLD06_LASER_H
+#endif // #ifndef __COBOLT__GEN5_LASER_H

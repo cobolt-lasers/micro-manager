@@ -228,12 +228,26 @@ void Laser::CreateOperatingHoursProperty()
 
 void Laser::CreateCurrentSetpointProperty()
 {
+    CreateCurrentSetpointProperty( "gdsn?", "sdsn" );
+}
+
+void Laser::CreateCurrentSetpointProperty( const std::string& getPersistedDataCommand, const std::string& setPersistedDataCommand )
+{
     MutableDeviceProperty* property;
    
     if ( IsShutterCommandSupported() || !IsInCdrhMode() ) {
         property = new NumericProperty<double>( "Current Setpoint [" + currentUnit_ + "]", laserDriver_, "glc?", "slc", 0.0f, MaxCurrentSetpoint() );
     } else {
-        property = new legacy::no_shutter_command::LaserCurrentProperty( "Current Setpoint [" + currentUnit_ + "]", laserDriver_, "glc?", "slc", 0.0f, MaxCurrentSetpoint(), this );
+        property = new legacy::no_shutter_command::LaserCurrentProperty(
+            "Current Setpoint [" + currentUnit_ + "]",
+            laserDriver_,
+            "glc?",
+            "slc",
+            0.0f,
+            MaxCurrentSetpoint(),
+            this,
+            getPersistedDataCommand,
+            setPersistedDataCommand );
     }
 
     RegisterPublicProperty( property );
@@ -278,7 +292,7 @@ void Laser::CreateShutterProperty()
     } else {
 
         if ( IsInCdrhMode() ) {
-            shutter_ = new legacy::no_shutter_command::LaserShutterPropertyCdrh( "Emission Status", laserDriver_, this );
+            shutter_ = new legacy::no_shutter_command::LaserShutterPropertyCdrh( "Emission Status", laserDriver_, this, "gdsn?", "sdsn" );
         } else {
             shutter_ = new legacy::no_shutter_command::LaserShutterPropertyOem( "Emission Status", laserDriver_, this );
         }
@@ -349,16 +363,22 @@ void Laser::CreateModulationHighPowerSetpointProperty()
 
 bool Laser::IsShutterCommandSupported() const // TODO: Split into IsShutterCommandSupported() and IsPauseCommandSupported()
 {
-    std::string response;
-    laserDriver_->SendCommand( "l0r", &response );
+    static std::string response;
+
+    if ( response.empty() ) {
+        laserDriver_->SendCommand( "l0r", &response );
+    }
     
     return ( response.find( "OK" ) != std::string::npos );
 }
 
 bool Laser::IsInCdrhMode() const
 {
-    std::string response;
-    laserDriver_->SendCommand( "gas?", &response );
+    static std::string response;
+
+    if ( response.empty() ) {
+        laserDriver_->SendCommand( "gas?", &response );
+    }
 
     return ( response == "1" );
 }

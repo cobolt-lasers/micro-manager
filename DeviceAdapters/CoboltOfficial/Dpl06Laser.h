@@ -31,7 +31,7 @@
 //                specified in owner's manual may result in exposure to hazardous radiation and
 //                violation of the CE / CDRH laser safety compliance.
 //
-// AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2020)
+// AUTHORS:       Lukas Kalinski / lukas.kalinski@coboltlasers.com (2025)
 //
 
 #ifndef __COBOLT__DPL06_LASER_H

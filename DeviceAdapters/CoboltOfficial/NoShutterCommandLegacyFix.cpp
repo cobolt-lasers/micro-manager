@@ -40,9 +40,15 @@ NAMESPACE_COBOLT_BEGIN
 
 using namespace legacy::no_shutter_command;
 
-LaserShutterPropertyCdrh::LaserShutterPropertyCdrh( const std::string& name, LaserDriver* laserDriver, Laser* laser ) :
+LaserShutterPropertyCdrh::LaserShutterPropertyCdrh(
+    const std::string& name,
+    LaserDriver* laserDriver,
+    Laser* laser,
+    const std::string& getPersistedDataCommand,
+    const std::string& setPersistedDataCommand
+) :
     cobolt::LaserShutterProperty( name, laserDriver, laser ),
-    laserStatePersistence_( laserDriver )
+    laserStatePersistence_( laserDriver, getPersistedDataCommand, setPersistedDataCommand )
 {
     if ( laserStatePersistence_.PersistedStateExists() ) { // Without this GetIsShutterOpen() may return false negatives.
 

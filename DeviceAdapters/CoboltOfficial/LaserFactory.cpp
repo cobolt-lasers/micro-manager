@@ -44,6 +44,7 @@
 #include "Mld06Laser.h"
 #include "OldDpl06Laser.h"
 #include "OldMld06Laser.h"
+#include "Gen5Laser.h"
 #include "SkyraLaser.h"
 
 //#include "StaticStringProperty.h"
@@ -113,11 +114,11 @@ Laser* LaserFactory::Create( LaserDriver* driver )
         Logger::Instance()->LogMessage( "Instantiating the 12V 06-MLD driver...", false );
         laser = new Mld06Laser( wavelength, driver );
 
-    }  /*else if ( modelString.find( "-05-01-" ) ) { // TODO: uncomment once we add support for gen5b
+    }  else if ( modelString.find( "-05-01-" ) ) {
 
-        //laser = new Gen5bLaser( "05", driver );
+        laser = new Gen5Laser( wavelength, driver );
 
-    } */else if ( firmwareVersion.find( "9.001" ) != std::string::npos ) {
+    } else if ( firmwareVersion.find( "9.001" ) != std::string::npos ) {
 
         static const int numberOfLines = 4;
         bool enabledLines[ numberOfLines ];
