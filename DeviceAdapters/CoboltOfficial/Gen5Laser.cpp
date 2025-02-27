@@ -45,7 +45,7 @@ using namespace std;
 using namespace cobolt;
 
 Gen5Laser::Gen5Laser( const std::string& wavelength, LaserDriver* driver ) :
-    Laser( "05-01 Laser", driver )
+    Laser( "05 Laser", driver )
 {
     currentUnit_ = Amperes;
     powerUnit_ = Watts;

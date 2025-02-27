@@ -114,7 +114,9 @@ Laser* LaserFactory::Create( LaserDriver* driver )
         Logger::Instance()->LogMessage( "Instantiating the 12V 06-MLD driver...", false );
         laser = new Mld06Laser( wavelength, driver );
 
-    }  else if ( modelString.find( "-05-01-" ) ) {
+    }  else if ( modelString.find( "-05-01-" ) || 
+                 modelString.find( "-05-03-" ) || 
+                 modelString.find( "-05-41-" ) ) {
 
         laser = new Gen5Laser( wavelength, driver );
 
