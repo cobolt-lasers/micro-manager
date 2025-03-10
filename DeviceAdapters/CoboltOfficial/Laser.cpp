@@ -369,7 +369,7 @@ bool Laser::IsShutterCommandSupported() const // TODO: Split into IsShutterComma
         laserDriver_->SendCommand( "l0r", &response );
     }
     
-    return ( response.find( "OK" ) != std::string::npos );
+    return ( response.find( "Syntax error" ) == std::string::npos );
 }
 
 bool Laser::IsInCdrhMode() const
