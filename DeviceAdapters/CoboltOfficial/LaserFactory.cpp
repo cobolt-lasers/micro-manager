@@ -119,6 +119,7 @@ Laser* LaserFactory::Create( LaserDriver* driver )
                  modelString.find( "-05-41-" ) ) {
 
         laser = new Gen5Laser( wavelength, driver );
+        Logger::Instance()->LogMessage("Instantiating the 05-laser driver...", false);
 
     } else if ( firmwareVersion.find( "9.001" ) != std::string::npos ) {
 

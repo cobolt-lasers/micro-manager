@@ -47,6 +47,9 @@ using namespace cobolt;
 Gen5Laser::Gen5Laser( const std::string& wavelength, LaserDriver* driver ) :
     Laser( "05 Laser", driver )
 {
+    Logger::Instance()->LogMessage("Identifying 05-laser", true);
+
+
     currentUnit_ = Amperes;
     powerUnit_ = Watts;
 
@@ -61,13 +64,35 @@ Gen5Laser::Gen5Laser( const std::string& wavelength, LaserDriver* driver ) :
     CreateKeyswitchProperty();
     CreateLaserStateProperty();
     //CreateLaserOnOffProperty();
-    CreateShutterProperty();
+    CreateShutterProperty("sartn", "gartn?" );
     CreateRunModeProperty();
     CreatePowerSetpointProperty();
     CreatePowerReadingProperty();
     CreateCurrentSetpointProperty( "gartn?", "sartn" );
     CreateCurrentReadingProperty();
 }
+
+
+//void Gen5Laser::CreateShutterProperty()
+//{
+//
+//    std::string test = IsShutterCommandSupported() ? "true" : "false";
+//    if (IsShutterCommandSupported()) {
+//        Logger::Instance()->LogMessage("Initiating shutter with l1r/l0r", true);
+//        shutter_ = new LaserShutterProperty("Emission Status", laserDriver_, this);
+//    }
+//    else {
+//
+//        if (IsInCdrhMode()) {
+//            shutter_ = new legacy::no_shutter_command::LaserShutterPropertyCdrh("Emission Status", laserDriver_, this, "gdsn?", "sdsn");
+//        }
+//        else {
+//            shutter_ = new legacy::no_shutter_command::LaserShutterPropertyOem("Emission Status", laserDriver_, this);
+//        }
+//    }
+//
+//    RegisterPublicProperty(shutter_);
+
 
 void Gen5Laser::CreateLaserStateProperty()
 {

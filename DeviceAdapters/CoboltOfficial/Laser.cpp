@@ -124,6 +124,7 @@ void Laser::SetOn( const bool on )
 }
 
 void Laser::SetShutterOpen( const bool open )
+
 {
     if ( shutter_ == NULL ) {
 
@@ -157,7 +158,7 @@ bool Laser::IsShutterOpen() const
         Logger::Instance()->LogError( "Laser::IsShutterOpen(): Shutter not available" );
         return false;
     }
-
+    
     return ( shutter_->IsOpen() );
 }
 
@@ -285,14 +286,17 @@ void Laser::CreateLaserOnOffProperty()
     laserOnOffProperty_ = property;
 }
 
-void Laser::CreateShutterProperty()
+void Laser::CreateShutterProperty(std::string saveCmd, std::string readCmd)
 {
+
+    std::string test = IsShutterCommandSupported() ? "true" : "false";
     if ( IsShutterCommandSupported() ) {
+        Logger::Instance()->LogMessage("Initiating shutter with l1r/l0r",true );
         shutter_ = new LaserShutterProperty( "Emission Status", laserDriver_, this );
     } else {
 
         if ( IsInCdrhMode() ) {
-            shutter_ = new legacy::no_shutter_command::LaserShutterPropertyCdrh( "Emission Status", laserDriver_, this, "gdsn?", "sdsn" );
+            shutter_ = new legacy::no_shutter_command::LaserShutterPropertyCdrh( "Emission Status", laserDriver_, this, readCmd, saveCmd );
         } else {
             shutter_ = new legacy::no_shutter_command::LaserShutterPropertyOem( "Emission Status", laserDriver_, this );
         }
@@ -365,11 +369,13 @@ bool Laser::IsShutterCommandSupported() const // TODO: Split into IsShutterComma
 {
     static std::string response;
 
-    if ( response.empty() ) {
-        laserDriver_->SendCommand( "l0r", &response );
+    if (response.empty()) {
+        laserDriver_->SendCommand("l0r", &response);
+        Logger::Instance()->LogError("Response from l0r:" + response);
+        // Logger::Instance()->LogError(response);
     }
-    
-    return ( response.find( "Syntax error" ) == std::string::npos );
+
+    return (!( response.find( "Invalid" ) != std::string::npos || response.find("illegal") != std::string::npos));
 }
 
 bool Laser::IsInCdrhMode() const

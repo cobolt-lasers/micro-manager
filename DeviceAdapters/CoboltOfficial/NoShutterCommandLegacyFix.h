@@ -51,6 +51,8 @@ namespace legacy
         class PersistedLaserState
         { 
         public:
+            std::string savedCurrentSetpoint;
+            std::string savedRunMode;
 
             PersistedLaserState( LaserDriver* laserDriver, const std::string& getPersistedDataCommand, const std::string& setPersistedDataCommand ) :
                 laserDriver_( laserDriver ),
@@ -73,6 +75,7 @@ namespace legacy
                 char valueToSave[ 32 ];
                 sprintf( valueToSave, "MM[%s;%s;%s]", isShutterOpenStr.c_str(), runmode.c_str(), currentSetpoint.c_str() );
                 const std::string saveCommand = _setPersistedDataCommand + " " + std::string( valueToSave );
+                Logger::Instance()->LogMessage("CoboltShutter :" + saveCommand, true);
 
                 return laserDriver_->SendCommand( saveCommand );
             }
@@ -94,8 +97,15 @@ namespace legacy
                 char valueToSave[ 32 ];
                 sprintf( valueToSave, "MM[%s;%s;%s]", ( isShutterOpen ? "1" : "0" ), runmode.c_str(), currentSetpoint.c_str() );
                 const std::string saveCommand = _setPersistedDataCommand + " " + std::string( valueToSave );
+                
+                Logger::Instance()->LogMessage("CoboltShutter : Save state" + saveCommand, true);
+                savedCurrentSetpoint = currentSetpoint;
+                savedRunMode = runmode;
+                //save to memory
 
-                return laserDriver_->SendCommand( saveCommand );
+
+
+                return laserDriver_->SendCommand(saveCommand);
             }
 
             int GetIsShutterOpen( bool& isShutterOpen ) const
@@ -112,14 +122,22 @@ namespace legacy
                 return returnCode;
             }
 
-            int GetRunmode( std::string& runmode ) const
+            int GetRunmode(std::string& runmode) const
             {
-                return Fetch( NULL, &runmode, NULL );
+
+                return Fetch(NULL, &runmode, NULL);
+                //runmode.assign(savedRunMode);
+
+                //return return_code::ok;
             }
 
             int GetCurrentSetpoint( std::string& currentSetpoint ) const
             {
-                return Fetch( NULL, NULL, &currentSetpoint );
+
+                return Fetch(NULL, NULL, &currentSetpoint);
+                //currentSetpoint.assign(savedCurrentSetpoint);
+
+                //return return_code::ok;
             }
 
         private:
@@ -169,6 +187,8 @@ namespace legacy
 
             const std::string _getPersistedDataCommand;
             const std::string _setPersistedDataCommand;
+
+
         };
 
         class LaserCurrentProperty : public NumericProperty<double>

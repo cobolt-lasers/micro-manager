@@ -133,33 +133,48 @@ int LaserShutterPropertyCdrh::SetValue( const std::string& value )
 
 int LaserShutterPropertyCdrh::SaveState()
 {
+ 
+    Logger::Instance()->LogMessage("CoboltShutter::Saving state", true);
     int returnCode = return_code::ok;
-
+    
     std::string runmode, currentSetpoint;
     
     returnCode = laserDriver_->SendCommand( "gam?", &runmode );
+    Logger::Instance()->LogMessage("CoboltShutter:: gam? "+ std::to_string(returnCode), true);
     if ( returnCode != return_code::ok ) { return returnCode; }
 
     laserDriver_->SendCommand( "glc?", &currentSetpoint );
+    Logger::Instance()->LogMessage("CoboltShutter:: glc? " + currentSetpoint, true);
     if ( returnCode != return_code::ok ) { return returnCode; }
 
     laserStatePersistence_.PersistState( IsOpen(), runmode, currentSetpoint );
+
+    
 
     return returnCode;
 }
 
 int LaserShutterPropertyCdrh::RestoreState()
 {
+
+    Logger::Instance()->LogMessage("CoboltShutter:: Restoring state ", true);
     int returnCode = return_code::ok;
 
     std::string runmode, currentSetpoint;
     
-    returnCode = laserStatePersistence_.GetRunmode( runmode );
-    if ( returnCode != return_code::ok ) { return returnCode;  }
-    
-    returnCode = laserStatePersistence_.GetCurrentSetpoint( currentSetpoint );
-    if ( returnCode != return_code::ok ) { return returnCode; }
+     laserStatePersistence_.GetRunmode( runmode );
+     laserStatePersistence_.GetCurrentSetpoint( currentSetpoint);
 
+    //if ( returnCode != return_code::ok ) { return returnCode;  }
+    
+    //returnCode = laserStatePersistence_.GetCurrentSetpoint( currentSetpoint );
+    //    if ( returnCode != return_code::ok ) { return returnCode; }
+
+
+
+    Logger::Instance()->LogMessage("CoboltShutter:: runmode: " + runmode, true);
+    Logger::Instance()->LogMessage(runmode, true);
+    Logger::Instance()->LogMessage("CoboltShutter:: current: " + currentSetpoint, true);
     std::string enterRunmodeCommand, setCurrentSetpointCommand;
 
     if ( runmode == "0" ) {

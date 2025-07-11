@@ -82,6 +82,7 @@ protected:
 
     static int NextId__;
 
+
     void RegisterState( const std::string& state );
 
     /// ###
@@ -103,7 +104,7 @@ protected:
     void CreatePowerReadingProperty();
 
     void CreateLaserOnOffProperty();
-    void CreateShutterProperty();
+    void CreateShutterProperty(std::string saveCmd="sdsn", std::string readCmd="gdsn?");
     void CreateDigitalModulationProperty();
     void CreateAnalogModulationFlagProperty();
 
@@ -140,6 +141,7 @@ protected:
     
     std::string id_;
     std::string name_;
+
     LaserDriver* laserDriver_;
 
     std::string currentUnit_;

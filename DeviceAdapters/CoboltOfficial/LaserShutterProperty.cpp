@@ -90,6 +90,7 @@ int LaserShutterProperty::SetValue( const std::string& value )
 
 bool LaserShutterProperty::IsOpen() const
 {
+    Logger::Instance()->LogMessage("Shutter is" + std::to_string(isOpen_), true);
     return isOpen_;
 }
 
