@@ -272,7 +272,7 @@ int CoboltOfficial::SendCommand( const std::string& command, std::string* respon
                     response->find( "Error" ) != std::string::npos ||
                     response->find( "ERROR" ) != std::string::npos ) {
 
-            Logger::Instance()->LogMessage( "CoboltOfficial::SendCommand: Sent: " + command + " Reply received: " + *response, true );
+            Logger::Instance()->LogMessage( "CoboltOfficial::SendCommand: Sent: '" + command + "' Reply received: '" + *response + "'", true);
             returnCode = cobolt::return_code::unsupported_command;
         }
     } else {
@@ -283,6 +283,8 @@ int CoboltOfficial::SendCommand( const std::string& command, std::string* respon
         
         if ( returnCode != cobolt::return_code::ok ) {
             Logger::Instance()->LogMessage( "CoboltOfficial::SendCommand: SendSerialCommand Failed: " + std::to_string( (long long) returnCode ), true );
+        } else {
+            Logger::Instance()->LogMessage( "CoboltOfficial::SendCommand: Sent: '" + command + "' Reply received and ignored: '" + ignoredResponse + "'", true);
         }
     }
     return returnCode;

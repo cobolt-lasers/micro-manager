@@ -88,20 +88,29 @@ Laser* LaserFactory::Create( LaserDriver* driver )
 
     Laser* laser;
 
-    if (modelString.find("-06-51-") != std::string::npos ||
-        modelString.find("-06-53-") != std::string::npos ||
-        modelString.find("-06-57-") != std::string::npos ||
-        modelString.find("-06-91-") != std::string::npos ||
-        modelString.find("-06-93-") != std::string::npos ||
-        modelString.find("-06-97-") != std::string::npos) {
+    if ( firmwareVersion.find("/1005.") != std::string::npos || // Old fw version format
+         firmwareVersion.find("BOB-1005") != std::string::npos ) { // New fw version format
+
+        Logger::Instance()->LogMessage("Instantiating the 12V 06-DPL driver...", false);
+        laser = new Dpl06Laser( wavelength, driver );
+
+    } else if (firmwareVersion.find("/1004.") != std::string::npos || // Old fw version format
+        firmwareVersion.find("CAP-1004") != std::string::npos) { // New fw version format
+
+        Logger::Instance()->LogMessage("Instantiating the 12V 06-MLD driver...", false);
+        laser = new Mld06Laser(wavelength, driver);
+
+        // TODO NOW: Add support for Impala using the same class as for 12V MLD
+
+    } else if ( modelString.find("-06-51-") != std::string::npos ||
+                modelString.find("-06-53-") != std::string::npos ||
+                modelString.find("-06-57-") != std::string::npos ||
+                modelString.find("-06-91-") != std::string::npos ||
+                modelString.find("-06-93-") != std::string::npos ||
+                modelString.find("-06-97-") != std::string::npos ) {
 
         Logger::Instance()->LogMessage( "Instantiating the 5V 06-DPL driver...", false );
         laser = new OldDpl06Laser( wavelength, driver );
-
-    } else if ( firmwareVersion.find( "/1005." ) != std::string::npos ) {
-
-        Logger::Instance()->LogMessage( "Instantiating the 12V 06-DPL driver...", false );
-        laser = new Dpl06Laser( wavelength, driver );
 
     } else if ( modelString.find( "-06-01-" ) != std::string::npos ||
                 modelString.find( "-06-03-" ) != std::string::npos ) {
@@ -109,15 +118,11 @@ Laser* LaserFactory::Create( LaserDriver* driver )
         Logger::Instance()->LogMessage( "Instantiating the 5V 06-MLD driver...", false );
         laser = new OldMld06Laser( "06-MLD", driver );
 
-    } else if ( firmwareVersion.find( "/1004." ) != std::string::npos ) {
+    } else if ( modelString.find( "-05-01-" ) != std::string::npos ||
+                 modelString.find( "-05-03-" ) != std::string::npos ||
+                 modelString.find( "-05-41-" ) != std::string::npos ) {
 
-        Logger::Instance()->LogMessage( "Instantiating the 12V 06-MLD driver...", false );
-        laser = new Mld06Laser( wavelength, driver );
-
-    }  else if ( modelString.find( "-05-01-" ) || 
-                 modelString.find( "-05-03-" ) || 
-                 modelString.find( "-05-41-" ) ) {
-
+        Logger::Instance()->LogMessage("Instantiating the 05-laser driver...", false);
         laser = new Gen5Laser( wavelength, driver );
 
     } else if ( firmwareVersion.find( "9.001" ) != std::string::npos ) {
@@ -148,6 +153,8 @@ Laser* LaserFactory::Create( LaserDriver* driver )
             enabledLines[ 3 ] );
 
     } else {
+
+        Logger::Instance()->LogMessage("Unknown laser, instantiating a generic driver...", false);
 
         laser = new Laser( "Unknown", driver );
     }
