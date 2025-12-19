@@ -280,6 +280,11 @@ int CoboltOfficial::SendCommand( const std::string& command, std::string* respon
         // Flush the response (failing to do so will result in this response being provided as the response of the next command):
         std::string ignoredResponse;
         GetSerialAnswer( port_.c_str(), "\r\n", ignoredResponse );
+
+        const bool echoOn = ( command == ignoredResponse );
+        if ( echoOn ) {
+            GetSerialAnswer(port_.c_str(), "\r\n", ignoredResponse);
+        }
         
         if ( returnCode != cobolt::return_code::ok ) {
             Logger::Instance()->LogMessage( "CoboltOfficial::SendCommand: SendSerialCommand Failed: " + std::to_string( (long long) returnCode ), true );
