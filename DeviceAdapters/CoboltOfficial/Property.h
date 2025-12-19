@@ -78,6 +78,7 @@ public:
     }
 
     Property( const Stereotype stereotype, const std::string& name );
+    virtual ~Property() {}
     
     virtual int IntroduceToGuiEnvironment( GuiEnvironment* );
 

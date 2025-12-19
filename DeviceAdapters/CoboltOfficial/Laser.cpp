@@ -74,6 +74,7 @@ Laser::Laser( const std::string& name, LaserDriver* driver ) :
     laserDriver_( driver ),
     currentUnit_( "?" ),
     powerUnit_( "?" ),
+    laserStateProperty_( NULL ),
     laserOnOffProperty_( NULL ),
     shutter_( NULL )
 {
