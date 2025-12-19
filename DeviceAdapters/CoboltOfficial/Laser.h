@@ -87,32 +87,32 @@ protected:
     /// ###
     /// Property Generators
 
-    void CreateNameProperty();
-    void CreateModelProperty();
-    void CreateWavelengthProperty( const std::string& wavelength );
-    void CreateKeyswitchProperty();
-    void CreateSerialNumberProperty();
-    void CreateFirmwareVersionProperty();
-    void CreateAdapterVersionProperty();
-
-    void CreateOperatingHoursProperty();
-    void CreateCurrentSetpointProperty();
-    void CreateCurrentSetpointProperty( const std::string& getPersistedDataCommand, const std::string& setPersistedDataCommand );
-    void CreateCurrentReadingProperty();
-    void CreatePowerSetpointProperty();
-    void CreatePowerReadingProperty();
-
-    void CreateLaserOnOffProperty();
-    void CreateShutterProperty();
-    void CreateDigitalModulationProperty();
-    void CreateAnalogModulationFlagProperty();
-
-    void CreateModulationPowerSetpointProperty();
-    void CreateAnalogImpedanceProperty();
-
-    void CreateModulationCurrentLowSetpointProperty();
-    void CreateModulationCurrentHighSetpointProperty();
-    void CreateModulationHighPowerSetpointProperty();
+    virtual void CreateNameProperty();
+    virtual void CreateModelProperty();
+    virtual void CreateWavelengthProperty( const std::string& wavelength );
+    virtual void CreateKeyswitchProperty();
+    virtual void CreateSerialNumberProperty();
+    virtual void CreateFirmwareVersionProperty();
+    virtual void CreateAdapterVersionProperty();
+     
+    virtual void CreateOperatingHoursProperty();
+    virtual void CreateCurrentSetpointProperty();
+    virtual void CreateCurrentSetpointProperty( const std::string& getPersistedDataCommand, const std::string& setPersistedDataCommand );
+    virtual void CreateCurrentReadingProperty();
+    virtual void CreatePowerSetpointProperty();
+    virtual void CreatePowerReadingProperty();
+    
+    virtual void CreateLaserOnOffProperty();
+    virtual void CreateShutterProperty();
+    virtual void CreateDigitalModulationProperty();
+    virtual void CreateAnalogModulationFlagProperty();
+     
+    virtual void CreateModulationPowerSetpointProperty();
+    virtual void CreateAnalogImpedanceProperty();
+     
+    virtual void CreateModulationCurrentLowSetpointProperty();
+    virtual void CreateModulationCurrentHighSetpointProperty();
+    virtual void CreateModulationHighPowerSetpointProperty();
     
     static const std::string Milliamperes;
     static const std::string Amperes;

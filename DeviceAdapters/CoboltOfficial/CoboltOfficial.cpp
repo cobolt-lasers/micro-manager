@@ -275,6 +275,7 @@ int CoboltOfficial::SendCommand( const std::string& command, std::string* respon
             Logger::Instance()->LogMessage( "CoboltOfficial::SendCommand: Sent: '" + command + "' Reply received: '" + *response + "'", true);
             returnCode = cobolt::return_code::unsupported_command;
         }
+
     } else {
 
         // Flush the response (failing to do so will result in this response being provided as the response of the next command):

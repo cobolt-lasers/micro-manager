@@ -43,11 +43,15 @@ NAMESPACE_COBOLT_BEGIN
 
 class LaserDriver;
 
+enum class LaserSeries06 { Mld, MldM };
+
 class Mld06Laser : public Laser
 {
 public:
 
-    Mld06Laser( const std::string& wavelength, LaserDriver* device );
+    Mld06Laser( const LaserSeries06 laserSeries, const std::string& wavelength, LaserDriver* device );
+    virtual void CreatePowerSetpointProperty() override;
+    virtual void CreateAnalogImpedanceProperty() override;
 
 protected:
 

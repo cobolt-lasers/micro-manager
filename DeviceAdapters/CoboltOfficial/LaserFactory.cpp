@@ -98,9 +98,12 @@ Laser* LaserFactory::Create( LaserDriver* driver )
         firmwareVersion.find("CAP-1004") != std::string::npos) { // New fw version format
 
         Logger::Instance()->LogMessage("Instantiating the 12V 06-MLD driver...", false);
-        laser = new Mld06Laser(wavelength, driver);
+        laser = new Mld06Laser( LaserSeries06::Mld, wavelength, driver );
 
-        // TODO NOW: Add support for Impala using the same class as for 12V MLD
+    } else if ( firmwareVersion.find("IMP-1011") != std::string::npos) {
+
+        Logger::Instance()->LogMessage("Instantiating the 12V 06-MLDM driver...", false);
+        laser = new Mld06Laser( LaserSeries06::MldM, wavelength, driver );
 
     } else if ( modelString.find("-06-51-") != std::string::npos ||
                 modelString.find("-06-53-") != std::string::npos ||

@@ -44,8 +44,10 @@
 using namespace std;
 using namespace cobolt;
 
-Mld06Laser::Mld06Laser( const std::string& wavelength, LaserDriver* driver ) :
-    Laser( "06-MLD (12V)", driver )
+// TODO: Aim to only have one class for all 06 lasers. The integration of Impala/MLDM into this class is part of that aim.
+
+Mld06Laser::Mld06Laser( const LaserSeries06 laserSeries, const std::string& wavelength, LaserDriver* driver ) :
+    Laser( ( laserSeries == LaserSeries06::Mld ? "06-MLD (12V)" : "06-MLDM (12V)" ), driver)
 {
     currentUnit_ = Milliamperes;
     powerUnit_ = Milliwatts;
@@ -71,6 +73,22 @@ Mld06Laser::Mld06Laser( const std::string& wavelength, LaserDriver* driver ) :
     CreateAnalogModulationFlagProperty();
     CreateAnalogImpedanceProperty();
     CreateModulationPowerSetpointProperty();
+}
+
+void Mld06Laser::CreatePowerSetpointProperty()
+{
+    MutableDeviceProperty* property = new NumericProperty<double>("Power Setpoint [" + powerUnit_ + "]", laserDriver_, "laser:cp:power:setpoint?", "slp", 0.0f, MaxPowerSetpoint());
+    RegisterPublicProperty(property);
+}
+
+void Mld06Laser::CreateAnalogImpedanceProperty()
+{
+    EnumerationProperty* property = new EnumerationProperty("Analog Impedance", laserDriver_, "system:input:analog:impedance?");
+
+    property->RegisterEnumerationItem("HIGH", "system:input:analog:impedance HIGH", "1 kOhm");
+    property->RegisterEnumerationItem("LOW", "system:input:analog:impedance LOW", "50 Ohm");
+
+    RegisterPublicProperty(property);
 }
 
 void Mld06Laser::CreateLaserStateProperty()
