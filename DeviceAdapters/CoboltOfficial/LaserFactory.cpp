@@ -123,7 +123,11 @@ Laser* LaserFactory::Create( LaserDriver* driver )
 
     } else if ( modelString.find( "-05-01-" ) != std::string::npos ||
         modelString.find( "-05-03-" ) != std::string::npos ||
-        modelString.find( "-05-41-" ) != std::string::npos ) {
+        modelString.find( "-05-41-" ) != std::string::npos ||
+        modelString.find( "-04-01-" ) != std::string::npos ||
+        modelString.find( "-04-03-" ) != std::string::npos ||
+        modelString.find( "-04-51-" ) != std::string::npos ||
+        modelString.find( "-04-53-" ) != std::string::npos ) {
 
         Logger::Instance()->LogMessage( "Instantiating the 05-laser driver...", false );
         laser = new Gen5Laser( wavelength, driver );
